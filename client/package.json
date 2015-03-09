@@ -4,7 +4,8 @@
   "dependencies": {
     "conjur-api": "latest",
     "async": "latest",
-    "winston": "latest",
+    "netrc": "latest",
+    "js-yaml": "latest",
     "restler": "git://github.com/berryboy/restler#master"
   },
   "licenses": [

@@ -10,9 +10,9 @@ The server exposes a single route `/say`, which prints a plain-text message to t
 
   $ docker build -t nodejs_client_nginx_service_ws .
 
-# Test
+# Run
 
-  $ docker run -d -p 8080:80 nodejs_client_nginx_service_ws
-  $ curl http://$(boot2docker ip):8080/say
-  It works!
-  
+  $ docker run -d --name nodejs_client_nginx_service_ws nodejs_client_nginx_service_ws
+
+Because we are not exposing any ports externally, there's no way to send any requests
+to this web service. You must go through the `../gatekeeper`! 

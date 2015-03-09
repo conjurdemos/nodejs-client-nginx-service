@@ -20,11 +20,13 @@ distinct from each other.
 # Launching the Gatekeeper
 
     $ docker run --link nodejs_client_nginx_service_ws:ws \
-      -it -v $PWD/conjur.pem:/etc/conjur.pem \
+      -d \
+      -v $PWD/conjur.pem:/etc/conjur.pem \
       -e CONJUR_APPLIANCE_URL=https://conjur/api \
       -e CONJUR_ACCOUNT=dev \
       -e CONJUR_POLICY_ID=$policy_id \
-      -p 8085:80 \
+      -p 8080:80 \
+      --name nodejs_client_nginx_service_gatekeeper \
       nodejs_client_nginx_service_gatekeeper
 
 # Connecting to the Gatekeeper
@@ -36,5 +38,5 @@ from the REST API, or using the CLI:
 
 Once obtained, this token can passed to the gatekeeper:
 
-    $ curl -H "$token" $(boot2docker ip):8085/say
-
+    $ curl -H "$token" $(boot2docker ip):8080/say
+    Good day!
