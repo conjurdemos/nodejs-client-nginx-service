@@ -1,0 +1,16 @@
+{
+  "name": "conjurdemos-nodejs-client-nginx-service",
+  "version": "1.0.0",
+  "dependencies": {
+    "conjur-api": "latest",
+    "async": "latest",
+    "winston": "latest",
+    "restler": "git://github.com/berryboy/restler#master"
+  },
+  "licenses": [
+    {
+      "type": "MIT"
+    }
+  ],
+  "main": "main.js"
+}

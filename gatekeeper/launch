@@ -1,0 +1,27 @@
+#!/usr/bin/env ruby
+#
+# Configure and run nginx.
+
+
+# Verify the presence of /etc/conjur.pem
+raise "/etc/conjur.pem does not exist" unless File.exists?("/etc/conjur.pem")
+
+# Generate the nginx configuration
+template = File.read("/nginx.conf.template")
+Var = Struct.new(:name, :env_key)
+[
+  Var.new(:conjur_appliance_url, 'CONJUR_APPLIANCE_URL'),
+  Var.new(:conjur_account, 'CONJUR_ACCOUNT'),
+  Var.new(:conjur_policy_id, 'CONJUR_POLICY_ID')
+].each do |var|
+  value = ENV[var.env_key] or raise "#{var.env_key} is not in the environment"
+  template.gsub! "@@#{var.name}@@", value
+end
+File.write("/etc/nginx/sites-enabled/default", template)
+
+puts template
+
+$stderr.puts "Starting nginx..."
+require 'fileutils'
+FileUtils.mkdir_p "/tmp/nginx"
+system %Q(nginx -g "daemon off;")
