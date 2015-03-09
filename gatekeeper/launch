@@ -1,25 +1,36 @@
 #!/usr/bin/env ruby
 #
 # Configure and run nginx.
-
+require 'yaml'
 
 # Verify the presence of /etc/conjur.pem
 raise "/etc/conjur.pem does not exist" unless File.exists?("/etc/conjur.pem")
+raise "/etc/conjur.conf does not exist" unless File.exists?("/etc/conjur.conf")
+
+conf = YAML.load(File.read('/etc/conjur.conf'))
 
 # Generate the nginx configuration
 template = File.read("/nginx.conf.template")
-Var = Struct.new(:name, :env_key)
+Var = Struct.new(:name, :conf_key, :env_key)
 [
-  Var.new(:conjur_appliance_url, 'CONJUR_APPLIANCE_URL'),
-  Var.new(:conjur_account, 'CONJUR_ACCOUNT'),
-  Var.new(:conjur_policy_id, 'CONJUR_POLICY_ID')
+  Var.new(:conjur_appliance_url, :appliance_url),
+  Var.new(:conjur_account, :account),
+  Var.new(:conjur_policy_id, nil, 'CONJUR_POLICY_ID')
 ].each do |var|
-  value = ENV[var.env_key] or raise "#{var.env_key} is not in the environment"
+  value = if var.conf_key
+    conf[var.conf_key.to_s] or raise "#{var.conf_key} is not in /etc/conjur.conf"
+  elsif var.env_key
+    ENV[var.env_key] or raise "#{var.env_key} is not in the environment"
+  else
+    raise "#{var.name} is unavailable"
+  end
+
   template.gsub! "@@#{var.name}@@", value
 end
 File.write("/etc/nginx/sites-enabled/default", template)
 
-puts template
+$stderr.puts "Generated Nginx config:"
+$stderr.puts template
 
 $stderr.puts "Starting nginx..."
 require 'fileutils'

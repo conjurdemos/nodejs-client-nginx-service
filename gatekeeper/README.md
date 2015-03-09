@@ -22,8 +22,7 @@ distinct from each other.
     $ docker run --link nodejs_client_nginx_service_ws:ws \
       -d \
       -v $PWD/conjur.pem:/etc/conjur.pem \
-      -e CONJUR_APPLIANCE_URL=https://conjur/api \
-      -e CONJUR_ACCOUNT=dev \
+      -v $PWD/.conjurrc:/etc/conjur.conf \
       -e CONJUR_POLICY_ID=$policy_id \
       -p 8080:80 \
       --name nodejs_client_nginx_service_gatekeeper \
