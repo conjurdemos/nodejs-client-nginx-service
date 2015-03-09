@@ -1,7 +1,0 @@
-#!/bin/sh -e
-#
-# Run nginx
-
-echo Starting nginx...
-mkdir -p /tmp/nginx
-nginx
