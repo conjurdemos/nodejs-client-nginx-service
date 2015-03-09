@@ -21,7 +21,7 @@ It works like this:
 
 Run the Web Service: 
 
-  $ docker run -d --name nodejs-to-nginx-ws conjurdemos/nodejs-to-nginx-ws
+    $ docker run -d --name nodejs-to-nginx-ws conjurdemos/nodejs-to-nginx-ws
 
 Create the Conjur resource:
 
