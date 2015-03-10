@@ -74,11 +74,8 @@ unreachable. We will expose it through the Gatekeeper.
 The Gatekeeper is also an Nginx server. It's configured to intercept all requests and authorize them using the 
 Conjur resource we defined earlier. Authorized requests are forwarded to the Web Service.
 
-So now we will run the Gatekeeper, linking the name `ws` to the Web Service, and providing the Conjur configuration 
-and SSL certificate:
-
-First, run it in the foreground to make sure the configuration and startup is successful. The gatekeeper needs to be able
-to connect to Conjur. To make this possible, we provide it with two files:
+We will now run the Gatekeeper, linking the name `ws` to the Web Service, and providing the Conjur configuration 
+and SSL certificate. To connect to Conjur, the Gatekeeper needs two files:
 
 * `/etc/conjur.conf` A Conjur configuration file, is created by the [conjur init](https://developer.conjur.net/reference/tools/init.html) command.
 * `/etc/conjur.pem` The Conjur SSL certificate. This file is also created and installed by [conjur init](https://developer.conjur.net/reference/tools/init.html).
@@ -191,7 +188,8 @@ Create a Conjur Layer to which all clients will belong.
 
 Now, give the Layer permission to use the Web Service:
 
-    $ conjur resource permit webservice:$policy_id/nodejs-to-nginx-1.0/ws layer:$policy_id/nodejs-to-nginx-1.0/clients execute
+    $ conjur resource permit webservice:$policy_id/nodejs-to-nginx-1.0/ws \
+      layer:$policy_id/nodejs-to-nginx-1.0/clients execute
     Permission granted
     
 Next, create a Host to represent a remote client, and save the command output in a file:
@@ -205,7 +203,8 @@ Next, create a Host to represent a remote client, and save the command output in
 
 Add the Host to the Layer:
 
-    $ conjur layer hosts add $policy_id/nodejs-to-nginx-1.0/clients $policy_id/nodejs-to-nginx-1.0/hosts/0
+    $ conjur layer hosts add $policy_id/nodejs-to-nginx-1.0/clients \
+      $policy_id/nodejs-to-nginx-1.0/hosts/0
     Host added
 
 The host is in the layer now:
@@ -243,7 +242,8 @@ Now it's time to run the client program again. This time, we won't use the cache
 
 With the credentials loaded into shell variables, run the client again:
 
-    $ CONJUR_AUTHN_LOGIN=host/$host_id CONJUR_AUTHN_API_KEY=$host_api_key GATEKEEPER=$(boot2docker ip):8080 node client/main.js
+    $ CONJUR_AUTHN_LOGIN=host/$host_id CONJUR_AUTHN_API_KEY=$host_api_key \
+      GATEKEEPER=$(boot2docker ip):8080 node client/main.js
     =========================================================================
     Appliance url: https://conjur.yourcorp.com/api
     Base url: https://conjur.yourcorp.com/
@@ -264,10 +264,12 @@ With the credentials loaded into shell variables, run the client again:
 
 If the Host is removed from the Layer, it will lose its privileges to the Gatekeeper.
 
-    $ conjur layer hosts remove $policy_id/nodejs-to-nginx-1.0/clients $policy_id/nodejs-to-nginx-1.0/hosts/0
+    $ conjur layer hosts remove $policy_id/nodejs-to-nginx-1.0/clients \
+      $policy_id/nodejs-to-nginx-1.0/hosts/0
     Host removed
     
-    $ CONJUR_AUTHN_LOGIN=host/$host_id CONJUR_AUTHN_API_KEY=$host_api_key GATEKEEPER=$(boot2docker ip):8080 node client/main.js
+    $ CONJUR_AUTHN_LOGIN=host/$host_id CONJUR_AUTHN_API_KEY=$host_api_key \
+      GATEKEEPER=$(boot2docker ip):8080 node client/main.js
     ...
     Received response from the Gatekeeper:
     <html>
