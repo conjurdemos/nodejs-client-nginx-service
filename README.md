@@ -53,10 +53,9 @@ This demo includes a simple Web Service which runs in Docker. It's just an Nginx
 out "Good day!" when it receives a GET request to the URL `/say`. You can print the Nginx configuration, it's very simple:
 
     $ cat ws/nginx.conf
-    # Docker containers should log to stdout and/or stderr.
-    error_log stderr notice;
-    
     server {
+      error_log stderr notice;
+      
       location = /say {
         content_by_lua 'ngx.say("Good day!")';
       }
