@@ -61,17 +61,24 @@ opts.ca = fs.readFileSync(settings['cert_file'], 'utf8');
 
 var endpoints = conjur.config.applianceEndpoints(applianceURL, account);
 
+console.log("Obtaining bearer token for login name " + login);
+
 conjur.authn
 	.connect(endpoints.authn(account))
 	.authenticate(login, password, function(result, token) {
 	    assert(token);
-	    
+
+	    console.log("Obtained token for " + token.data + " with timestamp " + token.timestamp);
+
 	    var options = {
 	    		headers: {
 	    			"Authorization": conjur.authn.tokenHeader(token)
 	    		}
 	    }
-	    restler.get(format("http://%s/say", gatekeeper), options).on('complete', function(result) {
+	    var url = format("http://%s/say", gatekeeper);
+	    console.log("Sending GET request to " + url + ", providing Conjur token in the Authorization header");
+	    restler.get(url, options).on('complete', function(result) {
+	    	console.log("Received response from the Gatekeeper:");
 	      if (result instanceof Error) {
 	        console.log('Error:', result.message);
 	      } else {

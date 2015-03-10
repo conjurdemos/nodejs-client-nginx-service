@@ -29,9 +29,6 @@ Var = Struct.new(:name, :conf_key, :env_key)
 end
 File.write("/etc/nginx/sites-enabled/default", template)
 
-$stderr.puts "Generated Nginx config:"
-$stderr.puts template
-
 $stderr.puts "Starting nginx..."
 require 'fileutils'
 FileUtils.mkdir_p "/tmp/nginx"
