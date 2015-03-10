@@ -13,7 +13,7 @@ It works like this:
 * A client Node.js program starts by [authenticating](http://developer.conjur.net/reference/services/authentication/authenticate.html) to Conjur, receiving a Conjur auth token
 (aka "bearer token").
 * The Node.js client makes a request to the Gatekeeper, providing the bearer token in the HTTP Authorization header.
-* The Gatekeeper uses the bearer token to authenticate and authorize the client to Conjur.
+* The Gatekeeper uses the bearer token to authenticate and authorize the request.
 * If successful, the request is forwarded to the Web Service, and the client receives the response.
 * If the client is unauthenticated or unauthorized, an appropriate HTTP status code is returned to the client.
 
@@ -21,9 +21,12 @@ It works like this:
 
 ## Create the Conjur Gatekeeper resource
 
-Access to the gatekeeper is controlled by a Conjur resource. Each Conjur resource can be the subject of a 
-[permission check](https://developer.conjur.net/reference/services/authorization/resource/check.html). For this demo,
-the client will be required to have `execute` privilege on the resource that we define here.
+Access to the Gatekeeper is controlled by a Conjur resource; Conjur resources are used for implementing 
+[permission checks](https://developer.conjur.net/reference/services/authorization/resource/check.html). Each
+resource is a unique record in Conjur on which specific privileges can be defined, and granted to roles. Users, Groups,
+Hosts, and Layers are all kinds of roles.
+
+For this demo, the client will be required to have `execute` privilege on a specific resource that we'll create here.
 
 Conjur records (resources and higher-level records like hosts, groups, and layers) are organized into "policies".
 Each policy is a set of records that are designed to work together. A policy is created by a simple convention
